@@ -12,12 +12,4 @@
     <string name="chapter_label">Capítulos</string>
     <string name="select_book">Selecciona un libro</string>
     <string name="local_verses">Versículos locales: %1$d</string>
-    <string name="notes_title">Notas</string>
-    <string name="notes_palette">Colores</string>
-    <string name="notes_hint">Escribe a mano alzada sobre el lienzo.</string>
-    <string name="notes_empty_hint">Toca y arrastra para dibujar notas.</string>
-    <string name="notes_save">Guardar</string>
-    <string name="notes_clear">Borrar lienzo</string>
-    <string name="notes_width">Trazo %1$d dp</string>
-    <string name="notes_fab">Abrir notas a mano alzada</string>
 </resources>

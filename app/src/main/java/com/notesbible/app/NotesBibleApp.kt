@@ -53,7 +53,6 @@ class AppContainer(context: Context) {
         parser = parser,
         versionDao = database.bibleVersionDao(),
         verseDao = database.verseDao(),
-        handwrittenNoteDao = database.handwrittenNoteDao(),
         availableVersions = DefaultBibleVersions,
         database = database
     )

@@ -15,12 +15,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -56,8 +54,7 @@ import com.notesbible.app.ui.model.VerseUi
 fun ReaderRoute(
     repository: BibleRepository,
     versionId: String,
-    onBack: () -> Unit,
-    onOpenNotes: (String, Int) -> Unit
+    onBack: () -> Unit
 ) {
     val viewModel: ReaderViewModel = viewModel(
         factory = ReaderViewModel.provideFactory(repository, versionId)
@@ -67,8 +64,7 @@ fun ReaderRoute(
         uiState = uiState,
         onBack = onBack,
         onBookSelected = viewModel::selectBook,
-        onChapterSelected = viewModel::selectChapter,
-        onAddNote = onOpenNotes
+        onChapterSelected = viewModel::selectChapter
     )
 }
 
@@ -79,7 +75,6 @@ fun ReaderScreen(
     onBack: () -> Unit,
     onBookSelected: (String) -> Unit,
     onChapterSelected: (Int) -> Unit,
-    onAddNote: (String, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -98,17 +93,6 @@ fun ReaderScreen(
                 },
                 scrollBehavior = scrollBehavior
             )
-        },
-        floatingActionButton = {
-            val currentBook = uiState.selectedBook
-            if (currentBook != null) {
-                FloatingActionButton(onClick = { onAddNote(currentBook, uiState.selectedChapter) }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Create,
-                        contentDescription = stringResource(R.string.notes_fab)
-                    )
-                }
-            }
         }
     ) { innerPadding ->
         if (!uiState.hasContent) {

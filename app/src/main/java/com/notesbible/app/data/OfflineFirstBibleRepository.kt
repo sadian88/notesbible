@@ -3,16 +3,12 @@ package com.notesbible.app.data
 import androidx.room.withTransaction
 import com.notesbible.app.data.local.BibleDatabase
 import com.notesbible.app.data.local.dao.BibleVersionDao
-import com.notesbible.app.data.local.dao.HandwrittenNoteDao
 import com.notesbible.app.data.local.dao.VerseDao
 import com.notesbible.app.data.local.entities.BibleVersionEntity
-import com.notesbible.app.data.local.entities.HandwrittenNoteEntity
 import com.notesbible.app.data.local.entities.VerseEntity
 import com.notesbible.app.data.models.BibleVersion
 import com.notesbible.app.data.models.BibleVersionDefinition
 import com.notesbible.app.data.models.BookSummary
-import com.notesbible.app.data.models.HandwrittenNote
-import com.notesbible.app.data.models.Stroke
 import com.notesbible.app.data.models.Verse
 import com.notesbible.app.data.remote.BibleApi
 import com.notesbible.app.data.remote.BibleJsonParser
@@ -23,22 +19,16 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 class OfflineFirstBibleRepository(
     private val bibleApi: BibleApi,
     private val parser: BibleJsonParser,
     private val versionDao: BibleVersionDao,
     private val verseDao: VerseDao,
-    private val handwrittenNoteDao: HandwrittenNoteDao,
     private val availableVersions: List<BibleVersionDefinition>,
     private val database: BibleDatabase,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : BibleRepository {
-
-    private val json = Json { encodeDefaults = true }
 
     override fun observeAvailableVersions(): Flow<List<BibleVersion>> {
         return versionDao.observeVersions().map { localVersions ->
@@ -115,49 +105,5 @@ class OfflineFirstBibleRepository(
         return verseDao.observeChapter(versionId, book, chapter).map { entities ->
             entities.map { Verse(it.verseNumber, it.text) }
         }
-    }
-
-    override fun observeHandwrittenNote(
-        versionId: String,
-        book: String,
-        chapter: Int,
-        verse: Int
-    ): Flow<HandwrittenNote?> {
-        return handwrittenNoteDao.observeNote(versionId, book, chapter, verse).map { entity ->
-            entity?.toDomain()
-        }
-    }
-
-    override suspend fun saveHandwrittenNote(note: HandwrittenNote) {
-        withContext(ioDispatcher) {
-            handwrittenNoteDao.upsert(note.toEntity())
-        }
-    }
-
-    private fun HandwrittenNoteEntity.toDomain(): HandwrittenNote {
-        val strokesList: List<Stroke> = if (strokes.isEmpty()) {
-            emptyList()
-        } else {
-            json.decodeFromString(strokes)
-        }
-        return HandwrittenNote(
-            versionId = versionId,
-            book = book,
-            chapter = chapter,
-            verse = verse,
-            strokes = strokesList,
-            updatedAt = updatedAt
-        )
-    }
-
-    private fun HandwrittenNote.toEntity(): HandwrittenNoteEntity {
-        return HandwrittenNoteEntity(
-            versionId = versionId,
-            book = book,
-            chapter = chapter,
-            verse = verse,
-            strokes = json.encodeToString(strokes),
-            updatedAt = System.currentTimeMillis()
-        )
     }
 }
