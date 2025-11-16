@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">NotesBible</string>
+    <string name="versions_title">Biblias disponibles</string>
+    <string name="versions_subtitle">Descarga una traducción y léela sin conexión</string>
+    <string name="reader_title">Lectura</string>
+    <string name="download">Descargar</string>
+    <string name="read">Leer</string>
+    <string name="retry">Reintentar</string>
+    <string name="download_error">Error al descargar</string>
+    <string name="reading_empty">Descarga una traducción para empezar a leer.</string>
+    <string name="book_label">Libro</string>
+    <string name="chapter_label">Capítulos</string>
+    <string name="select_book">Selecciona un libro</string>
+    <string name="local_verses">Versículos locales: %1$d</string>
+</resources>
